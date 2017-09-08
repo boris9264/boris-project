@@ -7,6 +7,7 @@
   <version>1.0-SNAPSHOT</version>
   <modules>
     <module>boris-web</module>
+    <module>java8</module>
   </modules>
   <packaging>pom</packaging>
 
