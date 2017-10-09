@@ -19,4 +19,12 @@ public class Apple {
     public void setWeight(int weight) {
         this.weight = weight;
     }
+
+    public static boolean isGreenApple(Apple apple) {
+        return "green".equals(apple.getColor());
+    }
+
+    public static boolean isHeavyApple(Apple apple) {
+        return apple.getWeight() > 150;
+    }
 }
