@@ -25,6 +25,7 @@ public class PredicateTest {
         list.add(apple2);
 
         List<Apple> results = PredicateTest.getResult(list,a -> a.getWeight()>80 && a.getWeight()>90, a-> a.setColor("RED"));
+
         System.out.println(JsonUtil.toString(results));
     }
 
