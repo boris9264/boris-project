@@ -9,4 +9,8 @@ public class PerformanceImp implements Performance {
         System.out.println("perform running.....");
 //        throw new RuntimeException();
     }
+
+    public void performParam(Param param) {
+        System.out.println("Name:" + param.getName() + "  age:" + param.getAge());
+    }
 }

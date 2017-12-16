@@ -13,4 +13,14 @@ public class ConcertConfig {
     public Audience audience() {
         return new Audience();
     }
+
+    @Bean
+    public AroundAudience aroundAudience() {
+        return new AroundAudience();
+    }
+
+    @Bean
+    public AudienceWithParam audienceWithParam() {
+        return new AudienceWithParam();
+    }
 }

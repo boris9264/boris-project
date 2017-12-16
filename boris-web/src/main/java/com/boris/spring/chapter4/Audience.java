@@ -2,7 +2,7 @@ package com.boris.spring.chapter4;
 
 import org.aspectj.lang.annotation.*;
 
-@Aspect
+//@Aspect
 public class Audience {
     //避免频繁使用切点表达式
     @Pointcut("execution(* com.boris.spring.*.*.perform(..))")

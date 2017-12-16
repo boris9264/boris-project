@@ -3,7 +3,6 @@ package com.boris.spring.chapter4;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -15,6 +14,10 @@ public class Runner {
 
     @Test
     public void runner() {
-        performance.perform();
+//        performance.perform();
+        Param param = new Param();
+        param.setName("boris");
+        param.setAge(18);
+        performance.performParam(param);
     }
 }
