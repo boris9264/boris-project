@@ -5,10 +5,14 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
+
 @Aspect
 public class AudienceWithParam {
 
-    @Pointcut("execution(* com.boris.spring.chapter4.Performance.performParam(..))" + " && args(param)")
+    @Pointcut("execution(* com.boris.spring.chapter4.Performance.performParam(Param)) && args(param)")
     public void performParam(Param param) {}
 
     @Around("performParam(param)")
@@ -17,8 +21,12 @@ public class AudienceWithParam {
             System.out.println(param.getName() + " Silencing cell phones");
             System.out.println("Talking seats");
             jp.proceed();
-            System.out.println("CLAP CLAP CLAP!!!");
+            System.out.println(param.getName() + "CLAP CLAP CLAP!!!");
         } catch (Throwable throwable) {
+            Writer result = new StringWriter();
+            PrintWriter printWriter = new PrintWriter(result);
+            throwable.printStackTrace(printWriter);
+            System.out.println(result.toString());
             System.out.println("Demanding a refund");
         }
     }
