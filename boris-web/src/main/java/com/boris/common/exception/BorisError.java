@@ -1,0 +1,29 @@
+package com.boris.common.exception;
+
+public enum BorisError {
+    SYSTEM_ERROR(-1,"系统错误");
+
+    private int errorCode;
+    private String errorMsg;
+
+    private BorisError(int errorCode, String errorMsg) {
+        this.errorCode = errorCode;
+        this.errorMsg = errorMsg;
+    }
+
+    public int getErrorCode() {
+        return errorCode;
+    }
+
+    public void setErrorCode(int errorCode) {
+        this.errorCode = errorCode;
+    }
+
+    public String getErrorMsg() {
+        return errorMsg;
+    }
+
+    public void setErrorMsg(String errorMsg) {
+        this.errorMsg = errorMsg;
+    }
+}
