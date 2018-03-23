@@ -51,7 +51,6 @@
 
     <build>
         <plugins>
-            <!-- Ҫ��Դ�����ȥ����Ҫ���������� -->
             <plugin>
                 <artifactId>maven-source-plugin</artifactId>
                 <version>2.1</version>
