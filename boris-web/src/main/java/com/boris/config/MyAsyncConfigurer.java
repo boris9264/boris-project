@@ -17,11 +17,14 @@ public class MyAsyncConfigurer implements AsyncConfigurer {
     public Executor getAsyncExecutor() {
         ThreadPoolTaskExecutor threadPool = new ThreadPoolTaskExecutor();
         threadPool.setCorePoolSize(20);
-        threadPool.setMaxPoolSize(100);
+        threadPool.setMaxPoolSize(30);
+        //队列中等待的最大线程数
+        threadPool.setQueueCapacity(10000);
         threadPool.setWaitForTasksToCompleteOnShutdown(true);
         threadPool.setAwaitTerminationSeconds(2);
         threadPool.setThreadNamePrefix("MyAsync-");
         threadPool.initialize();
+
         return threadPool;
     }
 
