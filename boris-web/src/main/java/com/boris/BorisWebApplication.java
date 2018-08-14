@@ -10,8 +10,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
 @SpringBootApplication
-public class BorisWebApplication extends SpringBootServletInitializer{
-
+public class BorisWebApplication{
+/*
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
 		return builder.sources(BorisWebApplication.class);
@@ -22,7 +22,7 @@ public class BorisWebApplication extends SpringBootServletInitializer{
 		servletContext.setInitParameter("logbackConfigLocation", "classpath:log4j/logback.xml");
 		servletContext.addListener(new LogbackConfigListener());
 		super.onStartup(servletContext);
-	}
+	}*/
 
 	public static void main(String[] args) {
 		SpringApplication.run(BorisWebApplication.class, args);

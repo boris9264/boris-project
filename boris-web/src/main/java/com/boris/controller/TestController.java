@@ -25,6 +25,7 @@ public class TestController {
     @RequestMapping("/hello")
     @ResponseBody
     public ResponseVo hello(@RequestBody PageParamVo param) {
+        LOG.info("入参:{}", JsonUtil.toString(param));
         return userService.queryUser();
     }
 
