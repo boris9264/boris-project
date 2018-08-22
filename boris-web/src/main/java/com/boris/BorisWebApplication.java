@@ -1,15 +1,11 @@
 package com.boris;
 
-import ch.qos.logback.ext.spring.web.LogbackConfigListener;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @SpringBootApplication
+@EnableWebMvc
 public class BorisWebApplication{
 /*
 	@Override

@@ -1,40 +1,20 @@
 package com.boris.common.vo;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
+@ApiModel(value = "通用返回结果")
+@Data
 public class ResponseVo<T> {
+    @ApiModelProperty(value = "是否成功")
     private boolean success = true;
+
+    @ApiModelProperty(value = "状态码")
     private int code = 200;
+
+    @ApiModelProperty(value = "描述")
     private String msg;
+
     private T data;
-
-    public boolean isSuccess() {
-        return success;
-    }
-
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public void setCode(int code) {
-        this.code = code;
-    }
-
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public void setData(T data) {
-        this.data = data;
-    }
 }

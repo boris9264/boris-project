@@ -6,14 +6,18 @@ import com.boris.common.vo.PageParamVo;
 import com.boris.common.vo.ResponseVo;
 import com.boris.model.User;
 import com.boris.service.UserService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+@Api(description="boris demo controller")
 @Controller
 @RequestMapping("/test")
 public class TestController {
@@ -22,16 +26,32 @@ public class TestController {
     @Autowired
     private UserService userService;
 
+    @ApiOperation(value="分页查询用户信息", notes="分页查询用户信息", httpMethod = "POST")
     @RequestMapping("/hello")
     @ResponseBody
-    public ResponseVo hello(@RequestBody PageParamVo param) {
+    public ResponseVo<User> hello(@RequestBody PageParamVo param) {
         LOG.info("入参:{}", JsonUtil.toString(param));
         return userService.queryUser();
     }
 
+    @ApiOperation(value="保存用户信息", notes="保存用户信息", httpMethod = "POST")
     @RequestMapping("/save")
     @ResponseBody
     public ResponseVo save(@RequestBody User user) throws BorisException {
         return userService.insert(user);
+    }
+
+    @ApiOperation(value="获取用户详情", notes="获取用户详情", httpMethod = "GET")
+    @RequestMapping(value = "/get", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseVo<User> get(@ApiParam(name = "userId", value = "用户ID")
+                                @RequestParam(value = "userId") Integer userId) {
+        ResponseVo<User> responseVo = new ResponseVo<>();
+        User user = new User();
+        user.setId(userId);
+        user.setName("Boris");
+        user.setGender(1);
+        responseVo.setData(user);
+        return responseVo;
     }
 }
