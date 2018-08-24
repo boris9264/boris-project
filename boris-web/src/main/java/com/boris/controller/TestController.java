@@ -9,6 +9,7 @@ import com.boris.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,9 +21,8 @@ import org.springframework.web.bind.annotation.*;
 @Api(description="boris demo controller")
 @Controller
 @RequestMapping("/test")
+@Slf4j
 public class TestController {
-    private final Logger LOG = LoggerFactory.getLogger(this.getClass());
-
     @Autowired
     private UserService userService;
 
@@ -30,7 +30,7 @@ public class TestController {
     @RequestMapping("/hello")
     @ResponseBody
     public ResponseVo<User> hello(@RequestBody PageParamVo param) {
-        LOG.info("入参:{}", JsonUtil.toString(param));
+        log.info("入参:{}", JsonUtil.toString(param));
         return userService.queryUser();
     }
 
