@@ -65,4 +65,11 @@ public class EsController {
     public boolean bulkDelete(@RequestBody List<ProductVo> productVos) {
         return ElasticsearchUtil.bulkDelete(productVos);
     }
+
+    @ApiOperation(value="获取全部数据", notes="获取全部数据", httpMethod = "GET")
+    @RequestMapping(value = "/queryAll", method = RequestMethod.GET)
+    @ResponseBody
+    public void queryAll() {
+        ElasticsearchUtil.queryAll();
+    }
 }
