@@ -22,7 +22,10 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.support.replication.ReplicationResponse;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.unit.Fuzziness;
+import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
@@ -34,7 +37,10 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Component
 @Slf4j
@@ -202,28 +208,49 @@ public class ElasticsearchUtil {
             }
             return true;
         } catch (Exception e) {
-            log.error("从索引中批量删除数据异常,", e);
+            log.error("从索引中批量删除数据异常:", e);
         }
         return false;
     }
 
-    public static void queryAll() {
-        SearchRequest searchRequest = new SearchRequest();
+    public static List<Map<String,Object>> queryAll() {
+        List<Map<String,Object>> results = new ArrayList<>();
+        //构造器参数为索引名称，多个索引用逗号分隔
+        SearchRequest searchRequest = new SearchRequest("products");
+        //类型名称
+        searchRequest.types("doc");
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-        searchSourceBuilder.query(QueryBuilders.matchAllQuery());
-        searchSourceBuilder.sort(new FieldSortBuilder("price").order(SortOrder.DESC));
+        //查询全部 数据量较大时不能使用
+//        searchSourceBuilder.query(QueryBuilders.matchAllQuery());
+
+        //模糊查询
+        QueryBuilder matchQueryBuilder = QueryBuilders.matchQuery("productName", "视")
+                .fuzziness(Fuzziness.AUTO);
+        searchSourceBuilder.query(matchQueryBuilder);
+
+        //根据doc中的属性排序(如doc中没有该属性会过滤掉)
+        searchSourceBuilder.sort(new FieldSortBuilder("price").order(SortOrder.ASC));
+
+        //从第几条数据开始查询
+        searchSourceBuilder.from(0);
+        //查询结果条数
+        searchSourceBuilder.size(5);
+        //设置超时时间
+        searchSourceBuilder.timeout(new TimeValue(60, TimeUnit.SECONDS));
         searchRequest.source(searchSourceBuilder);
+
         try {
             SearchResponse searchResponse = client.search(searchRequest);
             SearchHits searchHits = searchResponse.getHits();
-            System.out.println(searchHits.getTotalHits());
-            for (SearchHit searchHit : searchHits) {
-                System.out.println(searchHit.getSourceAsString());
+            if (searchHits.getTotalHits() > 0) {
+                for (SearchHit searchHit : searchHits) {
+                    results.add(searchHit.getSourceAsMap());
+                }
             }
-            System.out.println(123);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("从索引中查询数据异常:", e);
         }
+        return results;
     }
 //
 //    /**

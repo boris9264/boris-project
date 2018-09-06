@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Api(description="elasticsearch demo controller")
 @Controller
@@ -69,7 +70,7 @@ public class EsController {
     @ApiOperation(value="获取全部数据", notes="获取全部数据", httpMethod = "GET")
     @RequestMapping(value = "/queryAll", method = RequestMethod.GET)
     @ResponseBody
-    public void queryAll() {
-        ElasticsearchUtil.queryAll();
+    public List<Map<String,Object>> queryAll() {
+        return ElasticsearchUtil.queryAll();
     }
 }
