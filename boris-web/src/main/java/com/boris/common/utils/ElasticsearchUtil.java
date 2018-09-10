@@ -20,6 +20,8 @@ import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.support.replication.ReplicationResponse;
+import org.elasticsearch.client.Request;
+import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.unit.Fuzziness;
@@ -65,12 +67,12 @@ public class ElasticsearchUtil {
     public static boolean createIndex(String indexName) {
         CreateIndexRequest request = new CreateIndexRequest(indexName);
         request.settings(Settings.builder()
-                .put("index.number_of_shards", 3)
-                .put("index.number_of_replicas", 2)
+                .put("index.number_of_shards", 1)
+                .put("index.number_of_replicas", 0)
         );
 
         try {
-            CreateIndexResponse createIndexResponse = client.indices().create(request);
+            CreateIndexResponse createIndexResponse = client.indices().create(request, RequestOptions.DEFAULT);
             return createIndexResponse.isShardsAcknowledged();
         } catch (Exception e) {
             log.error("索引创建异常:", e);
@@ -84,7 +86,7 @@ public class ElasticsearchUtil {
     public static boolean deleteIndex(String indexName) {
         DeleteIndexRequest deleteIndexRequest = new DeleteIndexRequest(indexName);
         try {
-            DeleteIndexResponse response = client.indices().delete(deleteIndexRequest);
+            DeleteIndexResponse response = client.indices().delete(deleteIndexRequest, RequestOptions.DEFAULT);
             return response.isAcknowledged();
         } catch (Exception e) {
             log.error("索引删除异常:", e);
@@ -101,14 +103,14 @@ public class ElasticsearchUtil {
 
 
         if (StringUtils.isNotEmpty(productVo.getId())) {
-            request = new IndexRequest(productVo.getIndexName(), "doc", productVo.getId());
+            request = new IndexRequest(productVo.getIndexName(), productVo.getIndexType(), productVo.getId());
         } else {
-            request = new IndexRequest(productVo.getIndexName(), "doc");
+            request = new IndexRequest(productVo.getIndexName(), productVo.getIndexType());
         }
 
         request.source(JsonUtil.toString(productVo), XContentType.JSON);
         try {
-            IndexResponse indexResponse = client.index(request);
+            IndexResponse indexResponse = client.index(request, RequestOptions.DEFAULT);
             if (indexResponse.getResult() == DocWriteResponse.Result.CREATED) {
                 return true;
             }
@@ -125,9 +127,9 @@ public class ElasticsearchUtil {
      * 从索引中获取数据
      */
     public static ProductVo getDoc(ProductVo productVo) {
-        GetRequest getRequest = new GetRequest(productVo.getIndexName(), "doc", productVo.getId());
+        GetRequest getRequest = new GetRequest(productVo.getIndexName(), productVo.getIndexType(), productVo.getId());
         try {
-            GetResponse getResponse = client.get(getRequest);
+            GetResponse getResponse = client.get(getRequest, RequestOptions.DEFAULT);
             if (getResponse.isExists()) {
                 return JsonUtil.toPojo(getResponse.getSourceAsString(), ProductVo.class);
             }
@@ -141,9 +143,9 @@ public class ElasticsearchUtil {
      * 从索引中删除数据
      */
     public static boolean deleteDoc(ProductVo productVo) {
-        DeleteRequest request = new DeleteRequest(productVo.getIndexName(), "doc", productVo.getId());
+        DeleteRequest request = new DeleteRequest(productVo.getIndexName(), productVo.getIndexType(), productVo.getId());
         try {
-            DeleteResponse deleteResponse = client.delete(request);
+            DeleteResponse deleteResponse = client.delete(request, RequestOptions.DEFAULT);
             if (DocWriteResponse.Result.DELETED.equals(deleteResponse.getResult())) {
                 return true;
             }
@@ -165,11 +167,11 @@ public class ElasticsearchUtil {
     public static boolean bulkCreate(List<ProductVo> productVos) {
         BulkRequest request = new BulkRequest();
         for (ProductVo productVo : productVos) {
-            request.add(new IndexRequest(productVo.getIndexName(), "doc", productVo.getId())
+            request.add(new IndexRequest(productVo.getIndexName(), productVo.getIndexType(), productVo.getId())
                     .source(JsonUtil.toString(productVo), XContentType.JSON));
         }
         try {
-            BulkResponse bulkResponse = client.bulk(request);
+            BulkResponse bulkResponse = client.bulk(request, RequestOptions.DEFAULT);
             if (bulkResponse.hasFailures()) {
                 for (BulkItemResponse bulkItemResponse : bulkResponse) {
                     if (bulkItemResponse.isFailed()) {
@@ -192,11 +194,11 @@ public class ElasticsearchUtil {
     public static boolean bulkDelete(List<ProductVo> productVos) {
         BulkRequest request = new BulkRequest();
         for (ProductVo productVo : productVos) {
-            request.add(new DeleteRequest(productVo.getIndexName(), "doc", productVo.getId()));
+            request.add(new DeleteRequest(productVo.getIndexName(), productVo.getIndexType(), productVo.getId()));
         }
 
         try {
-            BulkResponse bulkResponse = client.bulk(request);
+            BulkResponse bulkResponse = client.bulk(request, RequestOptions.DEFAULT);
             if (bulkResponse.hasFailures()) {
                 for (BulkItemResponse bulkItemResponse : bulkResponse) {
                     if (bulkItemResponse.isFailed()) {
@@ -218,7 +220,7 @@ public class ElasticsearchUtil {
         //构造器参数为索引名称，多个索引用逗号分隔
         SearchRequest searchRequest = new SearchRequest("products");
         //类型名称
-        searchRequest.types("doc");
+        searchRequest.types("hea");
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         //查询全部 数据量较大时不能使用
 //        searchSourceBuilder.query(QueryBuilders.matchAllQuery());
@@ -240,7 +242,7 @@ public class ElasticsearchUtil {
         searchRequest.source(searchSourceBuilder);
 
         try {
-            SearchResponse searchResponse = client.search(searchRequest);
+            SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
             SearchHits searchHits = searchResponse.getHits();
             if (searchHits.getTotalHits() > 0) {
                 for (SearchHit searchHit : searchHits) {
