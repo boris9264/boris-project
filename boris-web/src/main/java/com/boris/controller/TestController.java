@@ -45,9 +45,10 @@ public class TestController {
         ResponseVo<User> responseVo = new ResponseVo<>();
         User user = new User();
         user.setId(userId);
-        user.setName("Boris");
+        user.setName("boris");
         user.setGender(1);
         responseVo.setData(user);
         return responseVo;
     }
+
 }
