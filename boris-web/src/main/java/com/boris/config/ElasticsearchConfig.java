@@ -18,12 +18,6 @@ public class ElasticsearchConfig {
     private String hostName;
 
     /**
-     * 端口
-     */
-    @Value("${elasticsearch.port}")
-    private Integer port;
-
-    /**
      * 集群名称
      */
     @Value("${elasticsearch.cluster.name}")
@@ -48,8 +42,8 @@ public class ElasticsearchConfig {
             //配置信息Settings自定义
             restHighLevelClient = new RestHighLevelClient(
                     RestClient.builder(
-                            new HttpHost(hostName, port, "http"),
-                            new HttpHost(hostName, 9201, "http")));
+                            new HttpHost(hostName, 9201, "http"),
+                            new HttpHost(hostName, 9202, "http")));
         } catch (Exception e) {
             log.error("elasticsearch TransportClient create error!!", e);
         }

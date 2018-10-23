@@ -7,7 +7,6 @@ import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsRequest;
 import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsResponse;
 import org.elasticsearch.action.support.IndicesOptions;
-import org.elasticsearch.action.support.WriteRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -16,7 +15,6 @@ import org.elasticsearch.common.collect.ImmutableOpenMap;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Map;
 
 public class ElasticsearchTest {
@@ -26,8 +24,8 @@ public class ElasticsearchTest {
             //配置信息Settings自定义
             client = new RestHighLevelClient(
                     RestClient.builder(
-                            new HttpHost("127.0.0.1", 9200, "http"),
-                            new HttpHost("127.0.0.1", 9201, "http")));
+                            new HttpHost("127.0.0.1", 9201, "http"),
+                            new HttpHost("127.0.0.1", 9202, "http")));
         } catch (Exception e) {
             e.printStackTrace();
         }
